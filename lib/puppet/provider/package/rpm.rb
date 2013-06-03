@@ -69,7 +69,7 @@ Puppet::Type.type(:package).provide :rpm, :source => :rpm, :parent => Puppet::Pr
     #NOTE: Prior to a fix for issue 1243, this method potentially returned a cached value
     #IF YOU CALL THIS METHOD, IT WILL CALL RPM
     #Use get(:property) to check if cached values are available
-    cmd = ["-q", @resource[:name], "#{self.class.nosignature}", "#{self.class.nodigest}", "--qf", self.class::NEVRA_FORMAT]
+    cmd = ["-q", "--whatprovides", @resource[:name], "#{self.class.nosignature}", "#{self.class.nodigest}", "--qf", self.class::NEVRA_FORMAT]
 
     begin
       output = rpm(*cmd)
@@ -90,7 +90,7 @@ Puppet::Type.type(:package).provide :rpm, :source => :rpm, :parent => Puppet::Pr
       @resource.fail "RPMs must specify a package source"
     end
 
-    cmd = [command(:rpm), "-q", "--qf", self.class::NEVRA_FORMAT, "-p", source]
+    cmd = [command(:rpm), "-q", "--whatprovides", "--qf", self.class::NEVRA_FORMAT, "-p", source]
     h = self.class.nevra_to_hash(execfail(cmd, Puppet::Error))
     h[:ensure]
   end
